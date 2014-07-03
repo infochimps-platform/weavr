@@ -1,5 +1,7 @@
 require 'faraday'
 require 'faraday_middleware'
+require 'gorillib/model'
+require 'gorillib/string/inflections'
 
 require 'weavr/connection'
 require 'weavr/resource'
