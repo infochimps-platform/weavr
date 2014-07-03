@@ -1,5 +1,6 @@
-require "weavr/version"
+require 'faraday'
+require 'faraday_middleware'
 
-module Weavr
-  # Your code goes here...
-end
+require 'weavr/connection'
+require 'weavr/version'
+
