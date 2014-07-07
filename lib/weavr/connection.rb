@@ -5,14 +5,13 @@ module Weavr
 
     def initialize(options = {})
       options = Weavr.default_configuration.merge(options)
-      @host = options[:host]
-      @port = options[:port]
+      @host   = options[:host]
+      @port   = options[:port]
       configure_connection(options[:username], options[:password])
     end
 
     def configure_connection(user, password)
       @connection ||= Faraday.new(url: base_url, headers: request_headers) do |conn|
-        conn.request  :json
         conn.request  :basic_auth, user, password
         conn.response :json
         conn.adapter  Faraday.default_adapter
@@ -24,20 +23,28 @@ module Weavr
     end
 
     def request_headers
-      { 'X-Requested-By' => "Weavr #{Weavr::VERSION}" }
+      { 'X-Requested-By' => "Weavr v#{Weavr::VERSION}" }
     end
 
-    def resource(action, path)
-      connection.send(action, path)
-      # Response.new(resp.status, resp.headers, resp.body)
+    def resource(action, path, data = {})
+      resp = connection.send(action, path) do |req|
+        req.body = data.to_json
+      end
+      Response.handle(resp.status, resp.headers, resp.body)
+    rescue Faraday::ConnectionFailed
+      raise ConnectionError.new "Could not reach Ambari API at #{host}:#{port}"
     end
 
     def clusters
-      Collection.of(Cluster).receive resource(:get, 'clusters').body
+      Collection.of(Cluster).receive resource(:get, 'clusters')
     end
 
     def cluster name
-      Cluster.receive resource(:get, "clusters/#{name}").body
+      Cluster.receive resource(:get, "clusters/#{name}")
+    end
+
+    def create_cluster name
+      resource(:post, "clusters/#{name}", Cluster.label => { version: 'HDP-2.1' })
     end
   end
 end
