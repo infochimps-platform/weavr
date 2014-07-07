@@ -3,6 +3,7 @@ require 'faraday_middleware'
 require 'gorillib/model'
 require 'gorillib/string/inflections'
 require 'gorillib/type/extended'
+require 'logger'
 
 require 'weavr/connection'
 require 'weavr/error'
@@ -22,21 +23,24 @@ require 'weavr/version'
 
 module Weavr
 
-  DEFAULT_USERNAME = 'admin'
-  DEFAULT_PASSWORD = 'admin'
-  AMBARI_HOST      = 'localhost'
-  AMBARI_PORT      = 8080
-
   def self.default_configuration
     {
-      username: DEFAULT_USERNAME,
-      password: DEFAULT_PASSWORD,
-      host:     AMBARI_HOST,
-      port:     AMBARI_PORT,
+      username:  'admin',
+      password:  'admin',
+      host:      'localhost',
+      port:      8080,
+      log_level: 'info',
     }
   end
 
   def self.connection
     @connection ||= Connection.new
+  end
+
+  def self.logger
+    return @logger if @logger
+    @logger = Logger.new(STDOUT)
+    @logger.level = Logger.const_get default_configuration[:log_level].to_s.upcase
+    @logger
   end
 end
