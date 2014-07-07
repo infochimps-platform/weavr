@@ -29,8 +29,10 @@ module Weavr
 
     def resource(action, path, data = {})
       resp = connection.send(action, path) do |req|
-        req.body = data.to_json
+        Weavr.logger.info "payload: #{data}" if data
+        req.body = data.to_json if data
       end
+      Weavr.logger.info "body: #{resp.body}"
       Response.handle(resp.status, resp.headers, resp.body)
     rescue Faraday::ConnectionFailed
       raise ConnectionError.new "Could not reach Ambari API at #{host}:#{port}"
