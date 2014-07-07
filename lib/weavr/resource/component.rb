@@ -8,5 +8,9 @@ module Weavr
     field :cluster_name,    String
     field :state,           String
     field :host_components, Array, of: HostRole
+
+    def create
+      resource_action(:post)
+    end
   end
 end
