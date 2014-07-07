@@ -19,5 +19,9 @@ module Weavr
     field :total_mem,              Integer
     field :desired_configs,        Hash            # Fix me
     field :host_components,        Array, of: HostRole
+
+    def create
+      resource_action(:post)
+    end
   end
 end
