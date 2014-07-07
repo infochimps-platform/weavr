@@ -7,5 +7,9 @@ module Weavr
     field :maintenance_state, String
     field :state,             String
     field :components,        Array, of: Component
+
+    def stop
+      resource_action(:put, RequestInfo: { context: 'Stop Service' }, Body: { ServiceInfo: { state:'INSTALLED' } })
+    end
   end
 end
