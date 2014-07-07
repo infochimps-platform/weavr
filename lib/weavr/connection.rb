@@ -14,6 +14,7 @@ module Weavr
       @connection ||= Faraday.new(url: base_url, headers: request_headers) do |conn|
         conn.request  :basic_auth, user, password
         conn.response :json
+        conn.response :logger, Weavr.logger
         conn.adapter  Faraday.default_adapter
       end
     end
@@ -44,7 +45,8 @@ module Weavr
     end
 
     def create_cluster name
-      resource(:post, "clusters/#{name}", Cluster.label => { version: 'HDP-2.1' })
+      cluster = Cluster.receive(cluster_name: name, href: File.join(base_url, 'clusters', name))
+      cluster.create
     end
   end
 end
