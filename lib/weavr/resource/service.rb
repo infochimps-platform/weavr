@@ -14,7 +14,7 @@ module Weavr
 
     def to_state state
       res = resource_action(:put, RequestInfo: { context: "Transition to #{state}" }, Body: { ServiceInfo: { state: state } })
-      Request.receive res
+      Request.receive(res || { })
     end
 
     def install
