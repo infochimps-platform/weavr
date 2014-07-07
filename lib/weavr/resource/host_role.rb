@@ -15,5 +15,9 @@ module Weavr
     field :metrics,             Hash   # Fix
     field :processes,           Array  # Fix
     field :component,           Array, of: Component
+
+    def create
+      resource_action(:post)
+    end
   end
 end
