@@ -8,5 +8,10 @@ module Weavr
     field :services,        Array, of: Service
     field :hosts,           Array, of: Host
     field :configurations,  Array, of: Configuration
+
+    def delete
+      services.each(&:stop)
+      resource_action(:delete)
+    end
   end
 end
