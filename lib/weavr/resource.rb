@@ -9,7 +9,7 @@ module Weavr
     end
 
     def self.extract_class_params params
-      params.merge params[label]
+      params.merge(params[label] || {})
     end
 
     def self.label
@@ -24,8 +24,12 @@ module Weavr
       Weavr.connection
     end
 
+    def resource_action(action, data = {})
+      connection.resource(action, href, data)
+    end
+
     def refresh!
-      receive! connection.connection.get(href).body
+      receive! resource_action(:get)
       self
     end
   end
