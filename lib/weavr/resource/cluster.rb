@@ -50,7 +50,6 @@ module Weavr
     end
 
     def delete
-      services.each(&:stop)
       resource_action(:delete)
     end
   end
