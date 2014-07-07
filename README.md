@@ -1,6 +1,6 @@
 # Weavr
 
-A Ruby client for Apache Ambari (REST client)[https://github.com/apache/ambari/blob/trunk/ambari-server/docs/api/v1/index.md]
+A Ruby client for Apache Ambari [REST client](https://github.com/apache/ambari/blob/trunk/ambari-server/docs/api/v1/index.md)
 
 ## Installation
 
