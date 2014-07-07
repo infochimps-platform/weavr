@@ -8,7 +8,6 @@ module Weavr
     field :errors,  Array, default: []
 
     def self.handle(status, headers, body)
-      puts "[debug] #{status}"
       self.receive(status: status, headers: headers, body: body).validate!
     end
 
