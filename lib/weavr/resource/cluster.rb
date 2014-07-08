@@ -38,9 +38,11 @@ module Weavr
     end
 
     def assign_host_components mapping
-      mapping.each_pair do |host, comp|
-        role = HostRole.receive(href: File.join(href, 'hosts', host, 'host_components', comp))
-        role.create
+      mapping.each_pair do |host, comps|
+        comps.each do |comp|
+          role = HostRole.receive(href: File.join(href, 'hosts', host, 'host_components', comp))
+          role.create
+        end
       end
     end
 
