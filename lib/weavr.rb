@@ -22,15 +22,27 @@ require 'weavr/response'
 require 'weavr/version'
 
 module Weavr
+  extend self
 
-  def self.default_configuration
-    {
+  def default_configuration
+    @defaults ||= {
       username:  'admin',
       password:  'admin',
       host:      'localhost',
       port:      8080,
       log_level: 'info',
     }
+  end
+
+  %w[ username password host port log_level ].each do |attr|
+    define_method("#{attr}=") do |val|
+      default_configuration[attr.to_sym] = val
+    end
+  end
+
+  def self.configure(&blk)
+    yield self
+    self
   end
 
   def self.connection
