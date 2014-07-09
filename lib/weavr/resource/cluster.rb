@@ -54,5 +54,10 @@ module Weavr
     def delete
       resource_action(:delete)
     end
+
+    # Weird persist method for the browser
+    def persist
+      connection.resource(:post, 'persist', 'CLUSTER_CURRENT_STATUS' => { 'clusterState' => 'CLUSTER_STARTED_5' }.to_json)
+    end
   end
 end
