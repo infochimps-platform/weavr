@@ -21,7 +21,7 @@ Gem::Specification.new do |gem|
 
   gem.add_development_dependency('bundler', '~> 1.6.2')
 
+  gem.add_dependency('activesupport',       '~> 4.1.4')
   gem.add_dependency('faraday',             '~> 0.9.0')
   gem.add_dependency('faraday_middleware',  '~> 0.9.1')
-  gem.add_dependency('gorillib',            '~> 0.6.0')
 end

@@ -1,8 +1,8 @@
+require 'active_support/core_ext/string/inflections'
 require 'faraday'
 require 'faraday_middleware'
 require 'gorillib/model'
-require 'gorillib/string/inflections'
-require 'gorillib/type/extended'
+require 'gorillib/model/type/extended'
 require 'logger'
 
 require 'weavr/connection'
