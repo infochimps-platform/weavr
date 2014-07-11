@@ -1,6 +1,6 @@
 module Weavr
   class Resource
-    include Gorillib::Model
+    include Gorillib::Builder
 
     field :href, String
 
