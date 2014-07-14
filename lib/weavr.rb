@@ -26,11 +26,11 @@ module Weavr
 
   def default_configuration
     {
-      username:  'admin',
-      password:  'admin',
-      host:      'localhost',
-      port:      8080,
-      log_level: 'info',
+      username:   'admin',
+      password:   'admin',
+      host:       'localhost',
+      port:       8080,
+      log_level:  'info',
       log_format: ->(sev, t, prog, msg){ "[%-5s] %s\n" % [sev.downcase, msg] }
     }
   end
