@@ -18,12 +18,78 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Configure the singleton client:
 
-## Contributing
+```ruby
+Weavr.configure(host:       'ambari.web.host',
+		port:       8080,
+                username:   'barnaby',
+                password:   'jones',
+                log_level:  'debug',
+                log_format: ->(sev, t, prog, msg){ "%s - %s - %s\n", [t, sev, msg] })
+```
 
-1. Fork it ( http://github.com/<my-github-username>/weavr/fork )
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request
+Create a new cluster:
+
+```ruby
+hwx = Weavr.create_cluster 'hwx'
+```
+
+Retrieve an existing cluster:
+
+```ruby
+hwx = Weavr.cluster 'hwx'
+```
+
+Add hosts to the cluster. They must already exist and have Ambari agent properly configured:
+
+```ruby
+hwx.add_hosts('hadoop0', 'hadoop1', 'hadoop2')
+```
+
+Add services to the cluster:
+
+```ruby
+hwx.add_services('HDFS', 'YARN', 'ZOOKEEPER')
+```
+
+Add components to the services:
+
+```ruby
+hwx.add_components('HDFS', ['NAMENODE', 'DATANODE', HDFS_CLIENT'])
+```
+
+Assign components to hosts:
+
+```ruby
+hwx.assign_host_components('hadoop0' => ['NAMENODE'],
+   		           'hadoop1' => ['DATANODE', 'HDFS_CLIENT'],
+   			   'hadoop2' => ['DATANODE', 'HDFS_CLIENT'])
+```
+
+Create config files:
+
+```ruby
+hwx.create_config('hdfs-site', 'version2', 'some.java.prop' => 'value')
+```
+
+Persist the cluster for the web api:
+
+```ruby
+hwx.persist
+```
+
+Access collections of objects by name:
+
+```ruby
+hdfs = hwx.services['HDFS']
+nn = hdfs.components['NAMENODE']
+```
+
+All objects can be refreshed to repopulate parameters:
+
+```ruby
+hwx.refresh!
+hwx.services['HDFS'].refresh!
+hwx.services['HDFS'].components['NAMENODE'].refresh!
+```
