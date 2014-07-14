@@ -6,7 +6,7 @@ module Weavr
     field :service_name,      String
     field :maintenance_state, String
     field :state,             String
-    field :components,        Array, of: Component
+    collection :components,   Component, key_method: 'component_name'
 
     def create
       resource_action(:post, self.class.label => { service_name: service_name })

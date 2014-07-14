@@ -18,7 +18,7 @@ module Weavr
     field :rack_info,              String
     field :total_mem,              Integer
     field :desired_configs,        Hash            # Fix me
-    field :host_components,        Array, of: HostRole
+    collection :host_components,   HostRole, key_method: 'component_name'
 
     def create
       resource_action(:post)

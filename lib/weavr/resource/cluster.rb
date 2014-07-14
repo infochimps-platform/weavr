@@ -4,9 +4,9 @@ module Weavr
     field :cluster_name,    String
     field :version,         String
     field :desired_configs, Hash       # Fix
-    field :requests,        Array, of: Request
-    field :services,        Array, of: Service
-    field :hosts,           Array, of: Host
+    collection :requests,   Request, key_method: 'id'
+    collection :services,   Service, key_method: 'service_name'
+    collection :hosts,      Host,    key_method: 'host_name'
     field :configurations,  Array, of: Configuration
 
     def create

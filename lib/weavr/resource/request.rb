@@ -18,6 +18,6 @@ module Weavr
     field :task_count,           Integer
     field :timed_out_task_count, Integer
     field :type,                 String
-    field :tasks,                Array, of: Task
+    collection :tasks,           Task, key_method: 'id'
   end
 end
