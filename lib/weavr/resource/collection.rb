@@ -1,9 +1,10 @@
 module Weavr
-  class Collection < Resource    
+  class Collection < Resource
     def self.of kind
-      Class.new(self) do
+      coll = Class.new(Resource) do
         field :items, Array, of: kind
-      end      
+      end
+      Weavr.const_set("#{kind.to_s.demodulize}Collection", coll)
     end
   end
 end
