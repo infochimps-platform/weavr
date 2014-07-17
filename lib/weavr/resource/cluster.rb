@@ -9,8 +9,8 @@ module Weavr
     collection :hosts,      Host,    key_method: 'host_name'
     field :configurations,  Array, of: Configuration
 
-    def create
-      resource_action(:post, self.class.label => { version: 'HDP-2.1' })
+    def create options
+      resource_action(:post, self.class.label => { version: 'HDP-2.1' }.merge(options))
     end
 
     def add_hosts(*names)
