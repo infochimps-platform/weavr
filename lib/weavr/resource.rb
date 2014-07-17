@@ -4,16 +4,33 @@ module Weavr
 
     field :href, String
 
-    def self.receive(params, &blk)
-      super extract_class_params(params, &blk)
-    end
+    class << self
+      def receive(params, &blk)
+        super extract_class_params(params, &blk)
+      end
 
-    def self.extract_class_params params
-      params.merge(params[label] || {})
-    end
+      def extract_class_params params
+        params.merge(params[label] || {})
+      end
 
-    def self.label
-      name.demodulize + 's'
+      def label
+        name.demodulize.pluralize
+      end
+
+      def predefine_class name
+        Weavr.const_set(name, Class.new(self))
+        child_resources << name
+      end
+
+      def child_resources
+        @resources ||= []
+      end
+
+      def load_definitions!
+        child_resources.each do |name|
+          require File.expand_path("../resource/#{name.underscore}", __FILE__)
+        end
+      end
     end
 
     def receive! params
