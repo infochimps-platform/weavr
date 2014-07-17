@@ -9,15 +9,6 @@ require 'weavr/connection'
 require 'weavr/error'
 require 'weavr/resource'
 require 'weavr/resource/class_map'
-require 'weavr/resource/cluster'
-require 'weavr/resource/collection'
-require 'weavr/resource/component'
-require 'weavr/resource/configuration'
-require 'weavr/resource/host'
-require 'weavr/resource/host_role'
-require 'weavr/resource/request'
-require 'weavr/resource/service'
-require 'weavr/resource/task'
 require 'weavr/response'
 require 'weavr/version'
 
@@ -74,9 +65,13 @@ module Weavr
     Collection.of(Cluster).receive connection.resource(:get, 'clusters')
   end
 
+  def stacks
+    Collection.of(Stack).receive connection.resource(:get, 'stacks2')
+  end
+
   # Should probably be Cluster.create
-  def create_cluster name
+  def create_cluster(name, options = {})
     cluster = Cluster.receive(cluster_name: name, href: File.join(connection.base_url, 'clusters', name))
-    cluster.create
+    cluster.create options
   end
 end
