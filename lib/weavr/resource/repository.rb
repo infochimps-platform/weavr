@@ -11,7 +11,7 @@ module Weavr
     field :stack_vesion,     String
 
     def update_base_url url
-      resource_action(:post, self.class.label => { base_url: url })
+      resource_action(:put, self.class.label => { base_url: url })
     end
   end
 end
