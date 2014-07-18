@@ -93,3 +93,9 @@ hwx.refresh!
 hwx.services['HDFS'].refresh!
 hwx.services['HDFS'].components['NAMENODE'].refresh!
 ```
+
+Adjust the repositories used to install components:
+
+```ruby
+Weavr.configure_repository(version: '2.1', os: 'redhat6', repo: 'HDP-2.1', url: 'http://public-repo-1.hortonworks.com/HDP/centos6/2.x/updates/2.1.3.0/')
+```
