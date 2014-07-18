@@ -65,13 +65,23 @@ module Weavr
     Collection.of(Cluster).receive connection.resource(:get, 'clusters')
   end
 
+  # Should probably be Cluster.create
+  def create_cluster(name, options = {})
+    cluster = Cluster.receive(cluster_name: name, href: File.join('clusters', name))
+    cluster.create options
+  end
+
   def stacks
     Collection.of(Stack).receive connection.resource(:get, 'stacks2')
   end
 
-  # Should probably be Cluster.create
-  def create_cluster(name, options = {})
-    cluster = Cluster.receive(cluster_name: name, href: File.join(connection.base_url, 'clusters', name))
-    cluster.create options
+  def configure_repository(params = {})
+    stack = stacks.items.first.refresh!
+    version = stack.versions[params[:version]].refresh!
+    os      = version.operatingSystems[params[:os]].refresh!
+    repo    = os.repositories[params[:repo]].refresh!
+    repo.update_base_url params[:url]
+    repo.refresh!
   end
+
 end
