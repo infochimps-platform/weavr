@@ -18,7 +18,7 @@ module Weavr
     end
 
     def install
-      to_state'INSTALLED'
+      to_state 'INSTALLED'
     end
 
     def stop
