@@ -15,6 +15,7 @@ module Weavr
     field :request_status,       String
     field :resource_filter,      Array
     field :start_time,           Integer  # Needs to be Date
+    field :status,               String
     field :task_count,           Integer
     field :timed_out_task_count, Integer
     field :type,                 String
