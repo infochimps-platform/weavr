@@ -3,8 +3,8 @@ module Weavr
     field :blueprint_name,    String
 
     # GET /blueprints Returns the available blueprints. 
-    def get_blueprints options
-      connection.resource(:get, "blueprints")
+    def get_blueprints
+      connection.resource(:get, 'blueprints')
     end
 
     # POST /blueprints/:name
