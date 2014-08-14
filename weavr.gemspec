@@ -25,4 +25,5 @@ Gem::Specification.new do |gem|
   gem.add_dependency('faraday',             '~> 0.9.0')
   gem.add_dependency('faraday_middleware',  '~> 0.9.1')
   gem.add_dependency('gorillib-model',      '~> 0.0.1')
+  gem.add_dependency('multi_json',          '~> 1.10.1')
 end
