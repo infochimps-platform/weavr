@@ -2,7 +2,8 @@ module Weavr
   class Blueprint < Resource
     field :blueprint_name,    String
 
-    # GET /blueprints Returns the available blueprints. 
+    # GET /blueprints
+    # Returns the available blueprints.
     def get_blueprints
       connection.resource(:get, 'blueprints')
     end
