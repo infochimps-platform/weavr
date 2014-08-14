@@ -54,6 +54,7 @@ module Weavr
 
     # POST /clusters/:name
     # Creates a cluster.
+    # Since this installs and starts services, return result of Request.receive(res)
     # example
     # curl -H "X-Requested-By: ambari" -d @hdp_blueprint_cluster.json -u admin:admin \
     #      -XPOST http://localhost:8080/api/v1/clusters/blueprint-hwx
@@ -73,8 +74,8 @@ module Weavr
         exit 1
       end
 
-      resource_action(:post, data)
-      self
+      res = resource_action(:post, data)
+      Request.receive(res || { })
     end
 
     # GET /clusters/:name?format=blueprint
