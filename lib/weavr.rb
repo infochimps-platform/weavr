@@ -79,6 +79,14 @@ module Weavr
     cluster.create_from_blueprint cluster_blueprint_filename
   end
 
+  def create_cluster_from_json(blueprint_name, cluster_name, filename)
+    blueprint = Blueprint.receive(blueprint_name: blueprint_name, href: "blueprints/#{blueprint_name}")
+    data = MultiJson.load(filename)
+    blueprint.create_from_data data['services']
+    cluster = Cluster.receive(cluster_name: cluster_name, href: File.join('clusters', cluster_name))
+    cluster.create_from_blueprint_data data['cluster']
+  end
+
   def stacks
     Collection.of(Stack).receive connection.resource(:get, 'stacks2')
   end

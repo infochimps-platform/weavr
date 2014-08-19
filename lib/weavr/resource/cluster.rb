@@ -74,6 +74,10 @@ module Weavr
         exit 1
       end
 
+      create_from_blueprint_data data
+    end
+
+    def create_from_blueprint_data data
       res = resource_action(:post, data)
       Request.receive(res || { })
     end

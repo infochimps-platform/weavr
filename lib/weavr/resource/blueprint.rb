@@ -29,6 +29,12 @@ module Weavr
         exit 1
       end
 
+      create_from_data data
+      # resource_action(:post, data)
+      # self
+    end
+
+    def create_from_data data
       resource_action(:post, data)
       self
     end
