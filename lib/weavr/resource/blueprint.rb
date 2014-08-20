@@ -1,6 +1,7 @@
+# -*- coding: utf-8 -*-
 module Weavr
   class Blueprint < Resource
-    field :blueprint_name,    String
+    field :blueprint_name, String
 
     # GET /blueprints
     # Returns the available blueprints.
@@ -15,23 +16,11 @@ module Weavr
     #      -XPOST http://localhost:8080/api/v1/blueprints/blueprint-hwx
     def create services_blueprint_filename
       begin
-        f = File.open(services_blueprint_filename, 'r')
+        data = MultiJson.load File.open(services_blueprint_filename, 'r')      
       rescue Exception => e
-        puts e
-        exit 1
+        raise e.message, Weavr::BlueprintError
       end
-
-      begin
-        data = MultiJson.load(f)
-      rescue MultiJson::ParseError => e
-        puts e.data
-        puts e.cause
-        exit 1
-      end
-
       create_from_data data
-      # resource_action(:post, data)
-      # self
     end
 
     def create_from_data data

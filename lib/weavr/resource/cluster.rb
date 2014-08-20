@@ -60,20 +60,10 @@ module Weavr
     #      -XPOST http://localhost:8080/api/v1/clusters/blueprint-hwx
     def create_from_blueprint cluster_blueprint_filename
       begin
-        f = File.open(cluster_blueprint_filename, 'r')
+        data = MultiJson.load File.open(cluster_blueprint_filename, 'r')
       rescue Exception => e
-        puts e
-        exit 1
+        raise e.message, Weavr::BlueprintError
       end
-
-      begin
-        data = MultiJson.load(f)
-      rescue MultiJson::ParseError => e
-        puts e.data
-        puts e.cause
-        exit 1
-      end
-
       create_from_blueprint_data data
     end
 

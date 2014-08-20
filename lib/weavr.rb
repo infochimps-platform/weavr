@@ -73,27 +73,18 @@ module Weavr
   end
 
   def create_cluster_from_blueprint(blueprint_name, cluster_name, services_blueprint_filename, cluster_blueprint_filename)
-    blueprint = Blueprint.receive(blueprint_name: blueprint_name, href: "blueprints/#{blueprint_name}")
+    blueprint = Blueprint.receive(blueprint_name: blueprint_name, href: File.join('blueprints', blueprint_name))
     blueprint.create services_blueprint_filename
     cluster = Cluster.receive(cluster_name: cluster_name, href: File.join('clusters', cluster_name))
     cluster.create_from_blueprint cluster_blueprint_filename
   end
-
+  
   def create_cluster_from_json(blueprint_name, cluster_name, filename)
-    blueprint = Blueprint.receive(blueprint_name: blueprint_name, href: "blueprints/#{blueprint_name}")
+    blueprint = Blueprint.receive(blueprint_name: blueprint_name, href: File.join('blueprints', blueprint_name))
     begin
-      f = File.open(filename, 'r')
+      data = MultiJson.load File.open(filename, 'r')
     rescue Exception => e
-      puts e
-      exit 1
-    end
-
-    begin
-      data = MultiJson.load(f)
-    rescue MultiJson::ParseError => e
-      puts e.data
-      puts e.cause
-      exit 1
+      raise e.message, Weavr::BlueprintError
     end
     blueprint.create_from_data data['services']
     cluster = Cluster.receive(cluster_name: cluster_name, href: File.join('clusters', cluster_name))
