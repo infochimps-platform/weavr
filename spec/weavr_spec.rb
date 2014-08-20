@@ -10,7 +10,12 @@ describe Weavr do
 
   subject(:weavr)              { described_class   }
   subject(:collection_resource){ Weavr::Collection }
+  subject(:blueprint_resource) { Weavr::Blueprint  }
   subject(:cluster_resource)   { Weavr::Cluster    }
+  subject(:request_resource)   { Weavr::Request    }
+
+  # dummy json data for mock blueprints
+  let(:data) {"{}"}
 
   after(:each) do
     clear_variables described_class
@@ -75,6 +80,39 @@ describe Weavr do
       cluster = weavr.create_cluster('foo')
       expect(cluster).to be_a(cluster_resource)
       expect(cluster.cluster_name).to eq('foo')
+    end
+  end
+
+  context '.get_blueprints' do
+    it 'gets all available blueprints' do
+      weavr.connection.should_receive(:resource).with(:get, 'blueprints')
+      blueprint = blueprint_resource.new(href: 'blueprints')
+      blueprint.get_blueprints
+    end
+
+    it 'generates a blueprint from a cluster' do
+      weavr.connection.should_receive(:resource).with(:get, 'clusters/foo?format=blueprint')
+      cluster = cluster_resource.new
+      cluster.get_blueprint 'foo'
+    end
+  end
+
+  context '.create_cluster_from_blueprint' do
+    it 'creates a new blueprint' do
+      File.stub(:open).with('baz.json','r') { StringIO.new(data) }
+      weavr.connection.should_receive(:resource).with(:post, 'blueprints/foo', an_instance_of(Hash))
+      blueprint = blueprint_resource.new(blueprint_name: 'foo', href: 'blueprints/foo')
+      blueprint.create 'baz.json'
+    end
+
+    it 'creates a new cluster from a blueprint' do
+      File.stub(:open).with('baz.json','r') { StringIO.new(data) }
+      weavr.connection.should_receive(:resource).with(:post, 'clusters/foo', an_instance_of(Hash))
+      cluster = cluster_resource.new(cluster_name: 'foo', href: 'clusters/foo')
+      req = cluster.create_from_blueprint 'baz.json'
+      expect(cluster).to be_a(cluster_resource)
+      expect(cluster.cluster_name).to eq('foo')
+      expect(req).to be_a(request_resource)
     end
   end
 

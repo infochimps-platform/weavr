@@ -52,6 +52,33 @@ module Weavr
       refresh!
     end
 
+    # POST /clusters/:name
+    # Creates a cluster.
+    # Since this installs and starts services, return result of Request.receive(res)
+    # example
+    # curl -H "X-Requested-By: ambari" -d @hdp_blueprint_cluster.json -u admin:admin \
+    #      -XPOST http://localhost:8080/api/v1/clusters/blueprint-hwx
+    def create_from_blueprint cluster_blueprint_filename
+      begin
+        data = MultiJson.load File.open(cluster_blueprint_filename, 'r')
+      rescue Exception => e
+        raise e.message, Weavr::BlueprintError
+      end
+      create_from_blueprint_data data
+    end
+
+    def create_from_blueprint_data data
+      res = resource_action(:post, data)
+      Request.receive(res || { })
+    end
+
+    # GET /clusters/:name?format=blueprint
+    # Export the current cluster layout as a blueprint.
+    # TODO: add GET param handling to Weavr::Connection#resource
+    def get_blueprint name
+      connection.resource(:get, "clusters/#{name}?format=blueprint")
+    end
+
     def delete
       resource_action(:delete)
     end

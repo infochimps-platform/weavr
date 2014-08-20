@@ -1,5 +1,5 @@
 # Declare all classes ahead of time to avoid dependency problems
-%w[ Cluster Collection Component Configuration Host
+%w[ Blueprint Cluster Collection Component Configuration Host
     HostRole OperatingSystem Repository Request
     Service ServiceComponent  Stack StackConfiguration
     StackService StackVersion Task

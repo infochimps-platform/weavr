@@ -99,3 +99,31 @@ Adjust the repositories used to install components:
 ```ruby
 Weavr.configure_repository(version: '2.1', os: 'redhat6', repo: 'HDP-2.1', url: 'http://public-repo-1.hortonworks.com/HDP/centos6/2.x/updates/2.1.3.0/')
 ```
+
+### Blueprints
+
+As of 1.6.0, Ambari supports blueprints, which are a convenient way to save
+and reuse ambari hadoop cluster configurations.
+
+For more info on blueprints, see [this blog post](http://hortonworks.com/blog/ambari-blueprints-delivers-missing-component-cluster-provisioning/) or [the ambari wiki](https://cwiki.apache.org/confluence/display/AMBARI/Blueprints).
+
+Sample usage:
+
+```ruby
+service_blueprint_name = 'blueprint-hwx'
+cluster_name = 'hwx'
+service_blueprint_filename = 'hdp_blueprint_services.json'
+cluster_blueprint_filename = 'hdp_blueprint_cluster.json'
+create_request = Weavr.create_cluster_from_blueprint(
+  service_blueprint_name,
+  cluster_name,
+  service_blueprint_filename,
+  cluster_blueprint_filename
+)
+
+# wait for services to install and start
+while create_request.id && create_request.progress_percent != 100.0
+  sleep 5
+  create_request.refresh!
+end
+```

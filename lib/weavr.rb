@@ -4,6 +4,7 @@ require 'faraday_middleware'
 require 'gorillib/builder'
 require 'gorillib/model/type/extended'
 require 'logger'
+require 'multi_json'
 
 require 'weavr/connection'
 require 'weavr/error'
@@ -69,6 +70,25 @@ module Weavr
   def create_cluster(name, options = {})
     cluster = Cluster.receive(cluster_name: name, href: File.join('clusters', name))
     cluster.create options
+  end
+
+  def create_cluster_from_blueprint(blueprint_name, cluster_name, services_blueprint_filename, cluster_blueprint_filename)
+    blueprint = Blueprint.receive(blueprint_name: blueprint_name, href: File.join('blueprints', blueprint_name))
+    blueprint.create services_blueprint_filename
+    cluster = Cluster.receive(cluster_name: cluster_name, href: File.join('clusters', cluster_name))
+    cluster.create_from_blueprint cluster_blueprint_filename
+  end
+  
+  def create_cluster_from_json(blueprint_name, cluster_name, filename)
+    blueprint = Blueprint.receive(blueprint_name: blueprint_name, href: File.join('blueprints', blueprint_name))
+    begin
+      data = MultiJson.load File.open(filename, 'r')
+    rescue Exception => e
+      raise e.message, Weavr::BlueprintError
+    end
+    blueprint.create_from_data data['services']
+    cluster = Cluster.receive(cluster_name: cluster_name, href: File.join('clusters', cluster_name))
+    cluster.create_from_blueprint_data data['cluster']
   end
 
   def stacks
