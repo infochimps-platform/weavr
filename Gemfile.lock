@@ -24,7 +24,7 @@ GEM
       multipart-post (>= 1.2, < 3)
     faraday_middleware (0.9.1)
       faraday (>= 0.7.4, < 0.10)
-    gorillib-model (0.0.1)
+    gorillib-model (0.0.3)
       activesupport (~> 4.1.4)
       addressable (~> 2.3.6)
       multi_json (~> 1.10.1)
