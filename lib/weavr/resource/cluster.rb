@@ -52,6 +52,23 @@ module Weavr
       refresh!
     end
 
+    def get_desired_configs
+      result = {}
+      connection.resource(:get, "clusters/#{name}/configurations").fetch('items').each do |item|
+        result[item.fetch('type')] = item
+      end
+      result
+    end
+
+    def get_properties(type, tag)
+      resp = connection.resource(:get, "clusters/#{name}/configurations?type=#{type}&tag=#{tag}")
+      resp.fetch('items').first.fetch('properties')
+    end
+
+    def name
+      href.split('/').last
+    end
+
     # POST /clusters/:name
     # Creates a cluster.
     # Since this installs and starts services, return result of Request.receive(res)
@@ -77,6 +94,32 @@ module Weavr
     # TODO: add GET param handling to Weavr::Connection#resource
     def get_blueprint name
       connection.resource(:get, "clusters/#{name}?format=blueprint")
+    end
+
+    def get_services
+      connection.resource(:get, "clusters/#{name}/services").fetch('items').map{|x| x.fetch('ServiceInfo').fetch('service_name')}
+    end
+
+    def get_service_state(service)
+      connection.resource(:get, "clusters/#{name}/services/#{service}").fetch('ServiceInfo').fetch('state')
+    end
+
+    def set_service_state(service, state)
+      state = state.upcase
+      if state != 'STARTED' && state != 'INSTALLED'
+        raise ArgumentError.new("unsupported Weavr service state #{state}")
+      end
+
+      connection.resource(:put, "clusters/#{name}/services/#{service}",
+                          RequestInfo: {
+                            context: "set #{service} state to #{state}",
+                          },
+                          Body: {
+                            ServiceInfo: {
+                              state: state,
+                            }
+                          },
+                          )
     end
 
     def delete
