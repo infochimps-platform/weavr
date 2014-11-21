@@ -1,9 +1,10 @@
 module Weavr
   class CLI
-    attr_reader :cluster
+    attr_reader :cluster, :log
 
-    def initialize(cluster)
+    def initialize(cluster, options = {})
       @cluster = cluster
+      @log = options[:log] || Weavr.log
     end
 
     #--------------------------------------------------------------------------------
@@ -18,7 +19,8 @@ module Weavr
       case (cmd = $stdin.readline.strip)
       when /^(start|stop|reconfigure|delete_app_timeline|wait)\s*(.*)/i
         begin
-          send($1, cluster, *($2.split(/\s+/)))
+          args = $2.split(/\s+/).map{|x| MultiJson.load(x) rescue x}
+          send($1, cluster, *args)
         rescue Interrupt => ex
           $stderr.puts "caught keyboard interrupt. C-c again or 'quit' to exit."
         rescue Weavr::RequestError => ex
@@ -75,7 +77,7 @@ module Weavr
     #
     # @param [Weavr::Cluster] cluster
     # @param [Array] types
-    def reconfigure(*types)
+    def reconfigure(confs, old_tag, new_tag, *types)
       confs_v = confs
       types = confs_v.keys if types.empty?
       
@@ -88,7 +90,9 @@ module Weavr
       types.each do |type|
         properties = confs_v[type]
 
-        old_config = cluster.configurations.find{|x| x.type == type}.tap(&:refresh!).properties
+        conf = cluster.configurations.find{|x| x.type == type}.tap(&:refresh!)
+        log.debug("properties: #{conf}")
+        old_config = conf.properties
         new_config = old_config.merge(properties)
         new_tag_v = new_tag
 
