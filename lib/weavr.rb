@@ -5,6 +5,7 @@ require 'gorillib/builder'
 require 'gorillib/model/type/extended'
 require 'logger'
 require 'multi_json'
+require 'tsort'
 
 require 'weavr/connection'
 require 'weavr/error'
@@ -12,6 +13,7 @@ require 'weavr/resource'
 require 'weavr/resource/class_map'
 require 'weavr/response'
 require 'weavr/version'
+require 'weavr/cli'
 
 module Weavr
   extend self
