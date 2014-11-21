@@ -13,7 +13,7 @@ module Weavr
     end
 
     def to_state state
-      res = resource_action(:put, RequestInfo: { context: "Transition to #{state}" }, Body: { ServiceInfo: { state: state } })
+      res = resource_action(:put, RequestInfo: { context: "Transition #{service_name} to #{state}" }, Body: { ServiceInfo: { state: state } })
       Request.receive(res || { })
     end
 
