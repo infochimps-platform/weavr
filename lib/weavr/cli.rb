@@ -60,7 +60,7 @@ module Weavr
         log.info("already deleted app timeline server.")
       else
         log.info("found #{app_tl}. deleting app timeline server.")
-        cluster.delete_component(host, 'APP_TIMELINE_SERVER')
+        app_tl.resource_action(:delete)
       end
     end
 
