@@ -88,8 +88,7 @@ module Weavr
       types.each do |type|
         properties = confs_v[type]
 
-        log.debug("desired configs: #{cluster.get_desired_configs.inspect}")
-        old_config = cluster.get_properties(type, old_tag)
+        old_config = cluster.configurations.find{|x| x.type == type}.tap(&:refresh!).properties
         new_config = old_config.merge(properties)
         new_tag_v = new_tag
 
@@ -120,7 +119,7 @@ module Weavr
     # @param [Array] services an array of Strings representing Ambari
     #                services
     def start(*services)
-      services = cluster.get_services if services.empty?
+      services = cluster.services.keys.dup
       class << services
         def dependencies
           @dependencies ||= {
@@ -157,7 +156,7 @@ module Weavr
       log.info "starting services in the following order: #{services}"
       services.each do |s|
         log.info "starting #{s}"
-        cluster.set_service_state(s, 'STARTED')
+        cluster.services[s].start
         wait('STARTED', s) unless unstartable_services.include? s
       end
     end
@@ -168,11 +167,9 @@ module Weavr
     # @param [Array] services an array of Strings representing Ambari
     #                services
     def stop(*services)
-      services = cluster.get_services if services.empty?
-
-      services.each do |s|
-        log.info "stopping #{s}"
-        cluster.set_service_state(s, 'INSTALLED')
+      cluster.services.each do |s|
+        log.info "stopping #{s.service_name}"
+        s.stop
       end
     end
 
@@ -181,14 +178,14 @@ module Weavr
     # @param [Weavr::Cluster] cluster cluster to operate on
     # @param [Array] services an array
     def wait(expected, *services)
-      services = cluster.get_services if services.empty?
+      services = cluster.services.keys.dup if services.empty?
       svcs = services.dup
 
       log.info "waiting for these services to reach state #{expected}: #{services}"
 
       loop do
         services.each do |s|
-          case (state = cluster.get_service_state(s))
+          case (state = cluster.services[s].tap(&:refresh!).state)
           when 'INSTALLED', 'STARTED', 'STARTING', 'STOPPING'
             if state == expected
               svcs.delete(s)
