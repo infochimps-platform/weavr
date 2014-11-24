@@ -127,3 +127,19 @@ while create_request.id && create_request.progress_percent != 100.0
   create_request.refresh!
 end
 ```
+
+### CLI
+
+Weavr includes a simple CLI that can start, stop and reconfigure
+services via the command-line.
+
+#### Sample Usage
+
+```
+bundle exec ruby ./bin/weavr-cli.rb
+pry(#Weavr::CLI))> stop 'HDFS'
+pry(#Weavr::CLI))> wait 'INSTALLED', 'HDFS'
+pry(#Weavr::CLI))> reconfigure {"hive.heapsize":"2000mb"}, '1', '2', 'global'
+pry(#Weavr::CLI))> start 'HDFS'
+pry(#Weavr::CLI))> wait 'STARTED', 'HDFS'
+```
