@@ -191,19 +191,23 @@ module Weavr
     # @param [Array] services an array
     def wait(expected, *services)
       services = get_services(services)
-      svcs = services.dup
+      svcs = services.map(&:service_name).dup
 
-      log.info "waiting for these services to reach state #{expected}: #{services}"
+      log.info "waiting for these services to reach state #{expected}: #{svcs}"
 
       loop do
         services.each do |s|
+          next unless svcs.include? s.service_name
+          log.debug("refreshing service #{s.service_name}")
           s.refresh!
+          log.debug("done. refreshed service #{s.service_name}")
           case (state = s.state)
           when 'INSTALLED', 'STARTED', 'STARTING', 'STOPPING'
             if state == expected
-              svcs.delete(s)
+              log.info("#{s.service_name} reached state #{state}.")
+              svcs.delete(s.service_name)
             else
-              log.info("#{s} in state #{state}")
+              log.info("#{s.service_name} in state #{state}")
             end
           else
             log.fatal("unrecognized service state: #{state} for #{s}")
@@ -221,7 +225,7 @@ module Weavr
       cluster.refresh!
 
       if services.empty?
-        cluster.services
+        cluster.services.values
       else
         services.map do |s|
           if (sv = cluster.services[s]).nil?
