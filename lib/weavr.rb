@@ -80,7 +80,7 @@ module Weavr
     cluster = Cluster.receive(cluster_name: cluster_name, href: File.join('clusters', cluster_name))
     cluster.create_from_blueprint cluster_blueprint_filename
   end
-  
+
   def create_cluster_from_json(blueprint_name, cluster_name, filename)
     blueprint = Blueprint.receive(blueprint_name: blueprint_name, href: File.join('blueprints', blueprint_name))
     begin
@@ -95,6 +95,10 @@ module Weavr
 
   def stacks
     Collection.of(Stack).receive connection.resource(:get, 'stacks2')
+  end
+
+  def hosts
+    Collection.of(Host).receive connection.resource(:get, 'hosts')
   end
 
   def configure_repository(params = {})

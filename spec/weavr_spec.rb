@@ -125,6 +125,15 @@ describe Weavr do
     end
   end
 
+  context '.hosts' do
+    it 'returns a collection of hosts' do
+      weavr.connection.should_receive(:resource).with(:get, 'hosts').and_return(items: [{ host_name: "host.name"}])
+      hosts = weavr.hosts
+      expect(hosts).to be_a(collection_resource)
+      expect(hosts.items.one?{ |h| h.host_name == 'host.name' }).to be_true
+    end
+  end
+
   context '.configure_repository' do
   end
 end
