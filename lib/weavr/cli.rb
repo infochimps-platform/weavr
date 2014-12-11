@@ -7,6 +7,7 @@ module Weavr
     def initialize(cluster, options = {})
       @cluster = cluster
       @log = options[:log] || Weavr.log
+      @ambari_wait_sec = options[:wait_sec] || 5.0
     end
 
     #--------------------------------------------------------------------------------
@@ -215,7 +216,7 @@ module Weavr
           end
         end
         break if svcs.empty?
-        sleep Settings.ambari_wait_sec
+        sleep @ambari_wait_sec
       end
     end
 
