@@ -45,6 +45,44 @@ module Weavr
       binding.pry
     end
 
+    # ensures the existence of all the specified hosts. for each host,
+    # ensures the existence of all the components on that host.
+    #
+    # @param [Array] hosts array of FQDN strings
+    # @param [Array] components array of strings representing Ambari components
+    def add_host_components(hosts, components)
+      cluster.refresh!
+      hosts.each do |h|
+        exists = cluster.hosts.keys.include?(h.to_s)
+        h = cluster.host(h,
+                         href: "#{cluster.href}/hosts/#{h}",
+                         cluster_name: cluster.cluster_name)
+        h.create unless exists
+        h.refresh!
+        components.each do |c|
+          exists = h.host_components.keys.include?(c.to_s)
+          c = h.host_component(c,
+                               href: "#{h.href}/host_components/#{c}",
+                               component_name: c,
+                               host_name: h.host_name)
+          c.create unless exists
+        end
+      end
+    end
+
+    # client components necessary to compel Ambari to install
+    # /etc/hadoop configuration files.
+    #
+    # @return [Array] array of host client components. /etc/hadoop
+    #                 doesn't seem to be installed unless at least
+    #                 GANGLIA_MONITOR is installed
+    def client_components
+      %w[FALCON_CLIENT HBASE_CLIENT HCAT HDFS_CLIENT
+         HIVE_CLIENT MAPREDUCE2_CLIENT OOZIE_CLIENT
+         PIG SQOOP TEZ_CLIENT YARN_CLIENT 
+         GANGLIA_MONITOR]
+    end
+
     #--------------------------------------------------------------------------------
     # interactive Ambari cluster operations
     #--------------------------------------------------------------------------------
