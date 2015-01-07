@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'configliere', git: 'git@github.com:infochimps-platform/configliere.git', branch: 'master'
+gem 'configliere', git: 'git@github.com:infochimps-platform/configliere.git', branch: '0.4.23'
 
 gemspec
 
