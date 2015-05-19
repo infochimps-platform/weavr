@@ -104,7 +104,7 @@ module Weavr
   def configure_repository(params = {})
     stack = stacks.items.first.refresh!
     version = stack.versions[params[:version]].refresh!
-    os      = version.operatingSystems[params[:os]].refresh!
+    os      = version.operating_systems[params[:os]].refresh!
     repo    = os.repositories[params[:repo]].refresh!
     repo.update_base_url params[:url]
     repo.refresh!

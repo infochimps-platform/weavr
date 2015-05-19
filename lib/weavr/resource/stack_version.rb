@@ -7,7 +7,7 @@ module Weavr
     field :active, :boolean
     field :min_upgrade_version, String
     field :parent_stack_version, String
-    collection :stackServices, StackService, key_method: 'service_name'
-    collection :operatingSystems, OperatingSystem, key_method: 'os_type'
+    collection :services, StackService, key_method: 'service_name'
+    collection :operating_systems, OperatingSystem, key_method: 'os_type'
   end
 end
