@@ -118,7 +118,7 @@ describe Weavr do
 
   context '.stacks' do
     it 'returns a collection of stacks' do
-      weavr.connection.should_receive(:resource).with(:get, 'stacks2').and_return(items: [{ stack_name: 'hdp' }])
+      weavr.connection.should_receive(:resource).with(:get, 'stacks').and_return(items: [{ stack_name: 'hdp' }])
       stacks = weavr.stacks
       expect(stacks).to be_a(collection_resource)
       expect(stacks.items.one?{ |c| c.stack_name == 'hdp' }).to be_true

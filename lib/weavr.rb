@@ -94,7 +94,7 @@ module Weavr
   end
 
   def stacks
-    Collection.of(Stack).receive connection.resource(:get, 'stacks2')
+    Collection.of(Stack).receive connection.resource(:get, 'stacks')
   end
 
   def hosts
