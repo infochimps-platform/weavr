@@ -56,7 +56,7 @@ hwx.add_services('HDFS', 'YARN', 'ZOOKEEPER')
 Add components to the services:
 
 ```ruby
-hwx.add_components('HDFS', ['NAMENODE', 'DATANODE', HDFS_CLIENT'])
+hwx.add_components('HDFS', ['NAMENODE', 'DATANODE', 'HDFS_CLIENT'])
 ```
 
 Assign components to hosts:
